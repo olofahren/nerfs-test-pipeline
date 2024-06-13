@@ -3,6 +3,7 @@ import subprocess
 from subprocess import check_output
 import signal
 import time
+import dataaug_test
 
 #variable inits
 data_folder = []
@@ -15,15 +16,15 @@ viewer=[]
 # WARNING: The viewer frequently causes some sort of overflow when moving the view rapidly, causing a failure 
 
 #-----------------------Specify settings for training-------------------
-no_of_sessions = 2
+no_of_sessions = 1
 
 #Session 1
-data_folder.append("data/blender/chair")
+data_folder.append("data/blender/hotdog")
 datatype.append("blender-data") #blender/colmap etc
 nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
+viewer.append("viewer+wandb") #viewer+wandb
 
-#Session 2
+#Session 2 NOT IN USE 
 data_folder.append("data/blender/drums")
 datatype.append("blender-data") #blender/colmap etc
 nerf_model.append("nerfacto")
@@ -34,6 +35,11 @@ viewer.append("wandb")
 
 #Applying data augmentations to the images
 
+#Fixing the training data by copying the images to preserve the original data
+# and applying data augmentations to the training data
+# for i in range(no_of_sessions):
+#     dataaug_test.handleImages("~/oloah408/nerfs-test-pipeline/"+data_folder[i]+"/", "train", "test", "val", "blur")
+    
 
 
 

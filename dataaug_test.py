@@ -16,34 +16,6 @@ val_folder = "val"
 #--------------------------------------------------------------------
 
 
-
-# def loadImages(folder):
-
-#     # Check file permissions and list files if accessible
-#     restricted_dir = root
-#     if os.access(restricted_dir, os.R_OK):
-#         files = os.listdir(restricted_dir)
-#         print("Files in the directory:")
-#         print(files)
-#     else:
-#         print("Insufficient permissions to access directory: {restricted_dir}")
-# #------------------------------------------------------- 
-
-
-
-#     images = []
-#     print("Loading images from folder: " + folder)
-#     for filename in os.listdir(folder):
-#         if filename.endswith(('.png', '.jpg', '.jpeg')):
-#             img_path = os.path.join(folder, filename)
-#             try:
-#                 with Image.open(img_path) as img:
-#                     images.append(img.copy())
-#             except IOError:
-#                 print("Error opening image {filename}")
-#     return images 
-
-
 def loadImages(folder):
     images = []
     abs_folder_path = os.path.expanduser(folder)
@@ -95,32 +67,55 @@ def addBlur(image):
 
 def addNoise(image):
     # Add noise to image
-    noisy_image = image.filter(ImageFilter.GaussianBlur(radius=5))
+    noisy_image = image.copy()
+    noisy_image = noisy_image + 0.1 * noisy_image.std() * np.random.random(noisy_image.shape)
     return noisy_image
+
+def handleImages(root, train_folder, test_folder, val_folder, dataAugmentationType):
+    os.system("sudo mkdir " + root + "original_images")
+    os.system("sudo mkdir "+ root +"original_images/train")
+
+    os.system("sudo cp "+ root + train_folder +"/* " + root + "original_images/train")
+
+    print("Load from "+ root + train_folder)
+    images_train = loadImages(root + train_folder)
+
+    if dataAugmentationType == "blur":
+        augmented_images_train = [addBlur(image) for image in images_train]
+    elif dataAugmentationType == "noise":
+        augmented_images_train = [addNoise(image) for image in images_train]
+    else:
+        print("Invalid data augmentation type")
+        return 0
+
+    saveImages(augmented_images_train, root + train_folder)
+
+
 
 #------------------------------------------------------------
 
 #Handle image folders and preserve original data
-os.system("sudo mkdir " + root + "original_images")
-os.system("sudo mkdir "+ root +"original_images/train")
-#os.system("mkdir -p original_images/test")
-#os.system("mkdir -p original_images/val")
+#os.system("sudo mkdir " + root + "original_images")
+#os.system("sudo mkdir "+ root +"original_images/train")
+#os.system("sudo mkdir "+root + "original_images/test")
+#os.system("sudo mkdir "+root + "original_images/val")
 
-os.system("sudo cp "+ root + train_folder +"/* " + root + "original_images/train")
-#os.system("cp "+ test_folder +"/* original_images/test")
-#os.system("cp "+ val_folder +"/* original_images/val")
-
+#os.system("sudo cp "+ root + train_folder +"/* " + root + "original_images/train")
+#os.system("sudo cp "+ root + test_folder +"/* " + root + "original_images/test")
+#os.system("sudo cp "+ root + val_folder +"/* " + root + "original_images/val")
 
 
 
 #Loading images and applying augmentations
-print("Load from "+ root + train_folder)
-images_train = loadImages(root + train_folder)
-#images_test = loadImages(test_folder)
-#images_val = loadImages(val_folder)
+# print("Load from "+ root + train_folder)
+# images_train = loadImages(root + train_folder)
+#images_test = loadImages(root + test_folder)
+#images_val = loadImages(root + val_folder)
 
-blurred_images_train = [addBlur(image) for image in images_train]
+# blurred_images_train = [addBlur(image) for image in images_train]
 #blurred_images_test = [addBlur(image) for image in images_test]
 #blurred_images_val = [addBlur(image) for image in images_val]
 
-saveImages(blurred_images_train, root + train_folder)
+# saveImages(blurred_images_train, root + train_folder)
+#saveImages(blurred_images_test, root + test_folder)
+#saveImages(blurred_images_val, root + val_folder)
