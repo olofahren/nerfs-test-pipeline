@@ -1,8 +1,12 @@
+import glob
 import os
 from PIL import Image
 from PIL import ImageFilter
 import matplotlib.pyplot as plt
 import numpy as np
+import camera_simulation.camera_sim as camera_sim
+import camera_simulation.img_io as img_io
+import shutil
 
 #------------------------------Settings------------------------------
 
@@ -17,13 +21,14 @@ val_folder = "val"
 #--------------------------------------------------------------------
 
 
+# -------------------------DATA HANDLING FUNCTIONS-------------------------
 def loadImages(folder):
     images = []
     abs_folder_path = os.path.expanduser(folder)
     print("Loading images from folder: " + abs_folder_path)
     
     if os.path.exists(abs_folder_path):
-        print("Folder exists")
+        print("Found data folder")
     else:
         print("Folder does not exist")
         # For debugging: Print the current working directory
@@ -44,6 +49,17 @@ def loadImages(folder):
 
     return images
 
+def loadImagesWithFilenames(folder):
+    images_with_filenames = []
+    folder = os.path.expanduser(folder)
+
+    for filename in os.listdir(folder):
+        if filename.endswith(('.png', '.jpg', '.jpeg', '.exr')):
+            img_path = os.path.join(folder, filename)
+            image = Image.open(img_path)
+            images_with_filenames.append((image, filename))
+    return images_with_filenames
+
 def displayImage(image):
     # Display image using matplotlib
     plt.imshow(image)
@@ -53,13 +69,22 @@ def displayImage(image):
 def saveImage(image, filename):
     image.save(filename)
 
-def saveImages(images, folder):
+def saveImagesBlender(images, folder):
     # Save images in folder
     abs_folder_path = os.path.expanduser(folder)
 
     for i, image in enumerate(images):
         saveImage(image, os.path.join(abs_folder_path, "r_" + str(i) + ".png"))
+        
+def saveImagesEyefulTower(images, folder):
+    # Save images in folder
+    abs_folder_path = os.path.expanduser(folder)
 
+        
+        
+# -------------------------DATA HANDLING FUNCTIONS-------------------------
+        
+# -------------------------DATA AUGMENTATION FUNCTIONS-------------------------
 def addBlur(image):
     # Add blur to image
     blurred_image = image.filter(ImageFilter.GaussianBlur(radius=5))
@@ -72,60 +97,95 @@ def addNoise(image):
     noisy_image = noisy_image + 0.1 * noisy_image.std() * np.random.random(noisy_image.shape)
     return noisy_image
 
-def augmentImages(root, train_folder, test_folder, val_folder, dataAugmentationType):
-    #Creating and copying original images to preserve original data
+# -------------------------DATA AUGMENTATION FUNCTIONS-------------------------
+
+# -------------------------COPY FILES-------------------------
+def copyOriginalImagesBlender(root, train_folder):
     os.system("sudo mkdir " + root + "original_images")
     os.system("sudo mkdir "+ root +"original_images/train")
     os.system("sudo cp "+ root + train_folder +"/* " + root + "original_images/train")
+    
+def copyOriginalImagesEyefulTower(root):
+    
+    root = os.path.expanduser(root)
+    os.system("sudo mkdir " + root + "original_images")
+    #check if folders already exist
+    if not os.path.exists(root + "original_images/1"):
+        for i in range(1,9):
+            os.system("sudo cp -r "+ root + "/"+str(i) + " " + root + "original_images/"+str(i) )
+# -------------------------COPY FILES-------------------------
+
+
+# -------------------------AUGMENT IMAGES-------------------------
+
+def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType):
+    #Creating and copying original images to preserve original data
+    if dataset == "blender":
+        copyOriginalImagesBlender(root, train_folder)
+    elif dataset == "eyefulTower":
+        copyOriginalImagesEyefulTower(root)   
 
     #Loading images 
     print("Load from "+ root + train_folder)
-    images_train = loadImages(root + train_folder)
+    images_train = []
+    if dataset == "blender":
+        images_train = loadImages(root + train_folder)
+    elif dataset == "eyefulTower":
+        for i in range(1,9):
+            images_train.extend(loadImages(root + str(i)))
 
     #Applying augmentations
     if dataAugmentationType == "blur":
+        print("Applying blur to images")
         augmented_images_train = [addBlur(image) for image in images_train]
     elif dataAugmentationType == "noise":
+        print("Applying noise to images")
         augmented_images_train = [addNoise(image) for image in images_train]
     elif dataAugmentationType == "none":
+        print("No data augmentation applied")
         augmented_images_train = images_train
+    elif dataAugmentationType == "camera":
+        
+        #REQUIRES HDR IMAGES TO FUNCTION PROPERLY
+        print("Simulating camera response function")
+        #Loading images with filenames, overwriting images_train
+        images_train = loadImagesWithFilenames(root + train_folder)
+        for image in images_train:
+            print("reading "+root + train_folder + "/" + image[1])
+            img_source = root + train_folder + "/" + image[1]
+            clip = 97  # How many pixels that will not be saturated, for exposure tuning
+
+            cs = camera_sim.CameraSim()
+            H = img_io.readEXR(img_source)
+
+            exposure = 1/np.percentile(H,clip) # Exposure based on the clipping point
+            sind = np.random.randint(0, cs.N)  # Random camera response function
+
+            L, crf = cs.capture(exposure*H, 'rand', sind, noise=False)
+            augmented_images_train.append(L)
     else:
         print("Invalid data augmentation type")
         return 0
 
-    saveImages(augmented_images_train, root + train_folder)
+    if dataset == "blender":
+        saveImagesBlender(augmented_images_train, root + train_folder)
+    elif dataset == "eyefulTower":
+        saveImagesEyefulTower(augmented_images_train, root)
 
-def restoreOriginalImages(root, train_folder):
+# -------------------------AUGMENT IMAGES-------------------------
+
+# -------------------------RESTORE FILES-------------------------
+
+def restoreOriginalImagesBlender(root, train_folder):
     #Restore original images
     print("Restoring original images from " + root + "original_images/train to " + root + train_folder)
     os.system("sudo cp "+ root + "original_images/train/* " + root + train_folder)
 
-
-#Deprecated code, moved to functions above
-#------------------------------------------------------------
-
-#Handle image folders and preserve original data
-#os.system("sudo mkdir " + root + "original_images")
-#os.system("sudo mkdir "+ root +"original_images/train")
-#os.system("sudo mkdir "+root + "original_images/test")
-#os.system("sudo mkdir "+root + "original_images/val")
-
-#os.system("sudo cp "+ root + train_folder +"/* " + root + "original_images/train")
-#os.system("sudo cp "+ root + test_folder +"/* " + root + "original_images/test")
-#os.system("sudo cp "+ root + val_folder +"/* " + root + "original_images/val")
+def restoreOriginalImagesEyefulTower(root):
+    for i in range(1,9):
+            print("Restoring original images from " + root + "original_images/"+str(i)+ "to " + root + "/"+str(i))
+            os.system("sudo cp -r" + root + "original_images/"+str(i) + " " + root + "/"+str(i))
+    
+# -------------------------RESTORE FILES-------------------------
 
 
-
-#Loading images and applying augmentations
-# print("Load from "+ root + train_folder)
-# images_train = loadImages(root + train_folder)
-#images_test = loadImages(root + test_folder)
-#images_val = loadImages(root + val_folder)
-
-# blurred_images_train = [addBlur(image) for image in images_train]
-#blurred_images_test = [addBlur(image) for image in images_test]
-#blurred_images_val = [addBlur(image) for image in images_val]
-
-# saveImages(blurred_images_train, root + train_folder)
-#saveImages(blurred_images_test, root + test_folder)
-#saveImages(blurred_images_val, root + val_folder)
