@@ -37,8 +37,8 @@ viewer.append("wandb")
 
 #Fixing the training data by copying the images to preserve the original data
 # and applying data augmentations to the training data
-# for i in range(no_of_sessions):
-#     dataaug_test.handleImages("~/oloah408/nerfs-test-pipeline/"+data_folder[i]+"/", "train", "test", "val", "blur")
+for i in range(no_of_sessions):
+    dataaug_test.augmentImages("~/oloah408/nerfs-test-pipeline/"+data_folder[i]+"/", "train", "test", "val", "blur")
     
 
 
@@ -60,3 +60,8 @@ for i in range(no_of_sessions):
     print("Training session " + str(i) + " quit!!!")
 
 os.system("Training finished/failed")
+
+#Restoring the original images
+for i in range(no_of_sessions):
+    print("Restoring original images for session " + str(i))
+    dataaug_test.restoreOriginalImages("~/oloah408/nerfs-test-pipeline/"+data_folder[i]+"/", "train")
