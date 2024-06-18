@@ -103,26 +103,46 @@ def writeLDR(img, file, exposure=0):
         raise IOException("Failed writing LDR image: %s"%e)
 
 # Read HDR image using OpenEXR
-def readEXR(file, verbose=False, dtype=np.float16):
+# def readEXR(file, verbose=False, dtype=np.float16):
 
-    inp = OpenEXR.InputFile(file)
-    h = inp.header()
+#     inp = OpenEXR.InputFile(file)
+#     h = inp.header()
     
-    if verbose:
-        print('\nEXR meta data:')
-        print(h['dataWindow'])
+#     if verbose:
+#         print('\nEXR meta data:')
+#         print(h['dataWindow'])
     
-    w = h['dataWindow'].max.x - h['dataWindow'].min.x + 1
-    h = h['dataWindow'].max.y - h['dataWindow'].min.y + 1
+#     w = h['dataWindow'].max.x - h['dataWindow'].min.x + 1
+#     h = h['dataWindow'].max.y - h['dataWindow'].min.y + 1
 
-    img = np.zeros((h,w,3))
+#     img = np.zeros((h,w,3))
 
-    (r, g, b) = inp.channels("RGB")
-    img[:,:,0] = np.reshape(np.fromstring(r, dtype=dtype), (h,w))
-    img[:,:,1] = np.reshape(np.fromstring(g, dtype=dtype), (h,w))
-    img[:,:,2] = np.reshape(np.fromstring(b, dtype=dtype), (h,w))
+#     (r, g, b) = inp.channels("RGB")
+#     img[:,:,0] = np.reshape(np.fromstring(r, dtype=dtype), (h,w))
+#     img[:,:,1] = np.reshape(np.fromstring(g, dtype=dtype), (h,w))
+#     img[:,:,2] = np.reshape(np.fromstring(b, dtype=dtype), (h,w))
     
-    return img
+#     return img
+
+def readEXR(file_path):
+    # Open the EXR file
+    exr_file = OpenEXR.InputFile(file_path)
+    
+    # Get the header to extract data window size
+    dw = exr_file.header()['dataWindow']
+    width, height = dw.max.x - dw.min.x + 1, dw.max.y - dw.min.y + 1
+    
+    # Define pixel type
+    pt = Imath.PixelType(Imath.PixelType.FLOAT)
+    
+    # Read RGB channels
+    channels = ['R', 'G', 'B']
+    rgb = [np.frombuffer(exr_file.channel(c, pt), dtype=np.float32) for c in channels]
+    
+    # Combine channels and reshape
+    img_data = np.stack(rgb, axis=-1).reshape((height, width, 3))
+    
+    return img_data
 
 # Write HDR image using OpenEXR
 def writeEXR(img, file):
