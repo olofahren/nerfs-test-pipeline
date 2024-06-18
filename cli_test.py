@@ -65,7 +65,7 @@ for i in range(no_of_sessions):
     command = ["ns-train", nerf_model[i], "--vis", viewer[i], datatype[i], "--data", data_folder[i]]
     command = [part for part in command if part.strip()] #removing possible blank spaces
     
-    #process = subprocess.run(command)
+    process = subprocess.run(command)
         
     #Restoring the original images
     if dataset[i] == "blender":

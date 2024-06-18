@@ -1,5 +1,6 @@
 import glob
 import os
+import subprocess
 from PIL import Image
 from PIL import ImageFilter
 import matplotlib.pyplot as plt
@@ -7,6 +8,7 @@ import numpy as np
 import camera_simulation.camera_sim as camera_sim
 import camera_simulation.img_io as img_io
 import shutil
+import getpass
 
 #------------------------------Settings------------------------------
 
@@ -118,37 +120,45 @@ def addNoise(image):
 
 # -------------------------COPY FILES-------------------------
 def copyOriginalImagesBlender(root, train_folder):
+    user = getpass.getuser()
     os.system("sudo mkdir " + root + "original_images")
     os.system("sudo mkdir "+ root +"original_images/train")
     os.system("sudo cp "+ root + train_folder +"/* " + root + "original_images/train")
+    subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + "original_images/train"])
     
 def copyOriginalImagesEyefulTower(root):
-    
+    user = getpass.getuser()
     root = os.path.expanduser(root)
     os.system("sudo mkdir " + root + "original_images")
     #check if folders already exist
     if not os.path.exists(root + "original_images/0"):
         for i in range(0,9):
             os.system("sudo cp -r "+ root + "/"+str(i) + " " + root + "original_images/"+str(i) )
+            subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + "original_images/"+str(i)])
 # -------------------------COPY FILES-------------------------
 
 # -------------------------RESTORE FILES-------------------------
 
 def restoreOriginalImagesBlender(root, train_folder):
     root = os.path.expanduser(root)
+    user = getpass.getuser()
 
     #Restore original images
     print("Restoring original images from " + root + "original_images/train to " + root + train_folder)
     os.system("sudo cp "+ root + "original_images/train/* " + root + train_folder)
+    subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + train_folder])
 
 def restoreOriginalImagesEyefulTower(root, imageFiletype):
+    user = getpass.getuser()
     root = os.path.expanduser(root)
     if imageFiletype == "exr":
         os.system("sudo sed -i 's/.png/.exr/g' "+root+"md5sums.txt")
         os.system("sudo sed -i 's/.png/.exr/g' "+root+"transforms.json")
     for i in range(0,9):
-            print("Restoring original images from " + root + "original_images/"+str(i)+ " to " + root + str(i))
-            os.system("sudo cp -r " + root + "original_images/"+ str(i) + "/* " + root +str(i))
+        os.system("sudo rm "+root+str(i)+"/*.png")  
+        print("Restoring original images from " + root + "original_images/"+str(i)+ " to " + root + str(i))
+        os.system("sudo cp -r " + root + "original_images/"+ str(i) + "/* " + root +str(i))
+        subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + str(i)])
     
 # -------------------------RESTORE FILES-------------------------
 
