@@ -154,11 +154,14 @@ def restoreOriginalImagesEyefulTower(root, imageFiletype):
     if imageFiletype == "exr":
         os.system("sudo sed -i 's/.png/.exr/g' "+root+"md5sums.txt")
         os.system("sudo sed -i 's/.png/.exr/g' "+root+"transforms.json")
+        
     for i in range(0,9):
-        os.system("sudo rm "+root+str(i)+"/*.png")  
         print("Restoring original images from " + root + "original_images/"+str(i)+ " to " + root + str(i))
-        os.system("sudo cp -r " + root + "original_images/"+ str(i) + "/* " + root +str(i))
-        subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + str(i)])
+        os.system("sudo rm -r " + root + str(i))
+    
+    #copy the entire contents of original_images to the current folder
+    os.system("sudo cp -r " + root + "original_images/*"+ " " + root)
+    subprocess.run(["sudo", "chown", "-R", user + ":" + user, root])
     
 # -------------------------RESTORE FILES-------------------------
 
@@ -213,18 +216,13 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
             
             length = len(images_train)
             
-            #replace all .exr file extensions with .png in the file md5sums.txt
+            #replace all .exr file extensions with .png to make nerfstudio happy
             os.system("sudo sed -i 's/.exr/.png/g' "+root+"md5sums.txt")
             os.system("sudo sed -i 's/.exr/.png/g' "+root+"transforms.json")
             
             for image in images_train:
                 print("Reading "+root + image[0]+"/" + image)
-                #progress bar
                 print("Progress: "+str(images_train.index(image))+"/"+str(length))
-                
-                
-                
-                
                 img_source = root + image[0]+"/" + image
                 
                 if not os.path.exists(img_source):
