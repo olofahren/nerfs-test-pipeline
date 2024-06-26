@@ -168,7 +168,7 @@ def restoreOriginalImagesEyefulTower(root, imageFiletype):
 
 # -------------------------AUGMENT IMAGES-------------------------
 
-def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType):
+def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType, cameraResponseFunction=False, clipValue=False):
     #if dataset used is BLENDER
     if dataset == "blender":
         copyOriginalImagesBlender(root, train_folder)
@@ -229,16 +229,24 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
                     print("File does not exist")
                     continue
                 else:
-                    clip = 97  # How many pixels that will not be saturated, for exposure tuning
+                    if not clipValue:
+                        clip = 97  # How many pixels that will not be saturated, for exposure tuning(3% of all pixels will be saturated, value over 1, clipped to 1)
+                    else:
+                        clip = clipValue
+                        
                     cs = camera_sim.CameraSim()
                     print("Simulating camera response function")
                     H = img_io.readEXR(img_source)
 
                     exposure = 1/np.percentile(H,clip) # Exposure based on the clipping point
-                    sind = np.random.randint(0, cs.N)  # Random camera response function
+                    
+                    if cameraResponseFunction:
+                        sind = cameraResponseFunction
+                    else:
+                        sind = np.random.randint(0, cs.N)  # Random camera response function
 
                     L, crf = cs.capture(exposure*H, 'rand', sind, noise=False)
-                
+                                    
                     saveImageEyefulTower(L, img_source)
                 print("_____________________________________________________________")
 
