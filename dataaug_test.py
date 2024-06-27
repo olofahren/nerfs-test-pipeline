@@ -9,16 +9,17 @@ import camera_simulation.camera_sim as camera_sim
 import camera_simulation.img_io as img_io
 import shutil
 import getpass
+import gamma_correction
 
 #------------------------------Settings------------------------------
 
 #Folders
 
 #Root folder for data e.g. "~/oloah408/nerfs-test-pipeline/data/blender/chair"
-root = "~/oloah408/nerfs-test-pipeline/data/blender/hotdog/"
-train_folder = "train"
-test_folder = "test"
-val_folder = "val" 
+#root = "~/oloah408/nerfs-test-pipeline/data/blender/hotdog/"
+#train_folder = "train"
+#test_folder = "test"
+#val_folder = "val" 
 
 #--------------------------------------------------------------------
 
@@ -33,7 +34,6 @@ def loadImages(folder):
         print("Found data folder")
     else:
         print("Folder does not exist")
-        # For debugging: Print the current working directory
         print("Current working directory: " + os.getcwd())
         return images  # Exit early if folder doesn't exist
 
@@ -51,20 +51,47 @@ def loadImages(folder):
 
     return images
 
+
 def loadImagesFilenames(folder):
-    images_with_filenames = []
+    filenames = []
     folder = os.path.expanduser(folder)
 
     print("Loading images with filenames from folder: " + folder)
     for root, dirs, files in os.walk(folder):
         for filename in files:
-            if filename.endswith(('.exr')):
+            if filename.endswith(('.exr', ".png", ".jpg", "jpeg")):
                 img_path = os.path.join(root, filename)
                 try:
-                    images_with_filenames.append(filename)
+                    filenames.append(filename)
                 except IOError:
                     print("Error opening image " + filename)
-    return images_with_filenames    
+    return filenames    
+
+def loadImagesWithFilenames(folder):
+    images = []
+    abs_folder_path = os.path.expanduser(folder)
+    print("Loading images with filenames from folder: " + abs_folder_path)
+    
+    if os.path.exists(abs_folder_path):
+        print("Found data folder")
+    else:
+        print("Folder does not exist")
+        print("Current working directory: " + os.getcwd())
+        return images  # Exit early if folder doesn't exist
+
+    try:
+        for filename in os.listdir(abs_folder_path):
+            if filename.endswith(('.png', '.jpg', '.jpeg')):
+                img_path = os.path.join(abs_folder_path, filename)
+                try:
+                    with Image.open(img_path) as img:
+                        images.append((filename, img.copy()))
+                except IOError:
+                    print("Error opening image " + filename)
+    except Exception as e:
+        print("Error accessing folder " + abs_folder_path + ": " + str(e))
+
+    return images
 
 def displayImage(image):
     # Display image using matplotlib
@@ -73,21 +100,24 @@ def displayImage(image):
     plt.show()
 
 def saveImage(image, filename):
+    #abs_filename = os.path.expanduser(filename)
     image.save(filename)
 
+#Does something weird. Makes the training produce shit. Nothing visually wrong with the images, but the NeRF freaks out.
 def saveImagesBlender(images, folder):
     # Save images in folder
     abs_folder_path = os.path.expanduser(folder)
+    print("Saving images to folder " + folder)
 
     for i, image in enumerate(images):
-        saveImage(image, os.path.join(abs_folder_path, "r_" + str(i) + ".png"))
+        saveImage(image[1], abs_folder_path+ "/" + image[0])
+
         
 def saveImageEyefulTower(image, filename):
     # Save images in correct folder structure
     #print(images)
     #filename = os.path.expanduser(filename)
     #delete the .exr file from the folder
-    #check if the file exists
     if not os.path.exists(filename):
         print("File does not exist")
     else:
@@ -96,7 +126,6 @@ def saveImageEyefulTower(image, filename):
     #removing the .exr extension from filename
     filename = filename[:-4]
     
-    #if the file has a 1 as the first character, save it in folder 1, etc.
     print("Saving image " + filename + ".png")
     img_io.writeLDR(image, filename + ".png") 
 
@@ -168,29 +197,37 @@ def restoreOriginalImagesEyefulTower(root, imageFiletype):
 
 # -------------------------AUGMENT IMAGES-------------------------
 
-def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType, cameraResponseFunction=False, clipValue=False):
+def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType, cameraResponseFunction=False, clipValue=False, gamma = 1):
     #if dataset used is BLENDER
     if dataset == "blender":
         copyOriginalImagesBlender(root, train_folder)
         print("Load from "+ root + train_folder)
-        images_train = loadImages(root + train_folder)
+        images_train = loadImagesWithFilenames(root + train_folder)
         if dataAugmentationType == "blur":
                 print("Applying blur to images")
                 augmented_images_train = [addBlur(image) for image in images_train]
+                saveImagesBlender(augmented_images_train, root + train_folder)
         elif dataAugmentationType == "noise":
             print("Applying noise to images")
             augmented_images_train = [addNoise(image) for image in images_train]
+            saveImagesBlender(augmented_images_train, root + train_folder)
         elif dataAugmentationType == "none":
             print("No data augmentation applied")
             augmented_images_train = images_train
+            saveImagesBlender(augmented_images_train, root + train_folder)
+            
+
         elif dataAugmentationType == "camera":
             print("Simulating camera response is not implemented for blender dataset, since no HDR images are available")
             return 0
+        elif dataAugmentationType == "gamma":
+            print("Applying gamma correction to images")
+            augmented_images_train = gamma_correction.adjustGamma(gamma, images_train)
+            saveImagesBlender(augmented_images_train, root + train_folder)
         else:
             print("Invalid data augmentation type")
             return 0
     
-        saveImagesBlender(augmented_images_train, root + train_folder)
     
     #if dataset used is EYEFULTOWER
     elif dataset == "eyefulTower":
