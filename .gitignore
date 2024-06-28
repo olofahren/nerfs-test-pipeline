@@ -4,3 +4,4 @@ blender/
 outputs/
 data/eyefultower/
 __pycache__/dataaug_test.cpython-35.pyc
+renders/

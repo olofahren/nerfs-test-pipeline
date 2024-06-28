@@ -29,4 +29,6 @@ def adjustGamma(gamma, images):
     
     return gammaCorrectedImages
 
+
+
         
