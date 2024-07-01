@@ -8,6 +8,7 @@ import dataaug_test
 import wandb
 import extract_views
 import gamma_correction
+import quality_metrics
 
 #variable inits
 data_folder = []
@@ -31,31 +32,7 @@ gamma = []
 # mipnerf gets stuck and does not produce any results
 
 #-----------------------Specify settings for training-------------------
-no_of_sessions = 1
-
-#Session 0
-data_folder.append("data/blender/drums")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.5)
-
-#Session 0
-data_folder.append("data/blender/drums")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.5)
+no_of_sessions = 11
 
 #Session 0
 data_folder.append("data/blender/drums")
@@ -79,7 +56,7 @@ augmentationType.append("gamma")
 crfNr.append(2)
 clipValue.append(90)
 dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.5)
+gamma.append(1.1)
 
 #Session 0
 data_folder.append("data/blender/drums")
@@ -91,7 +68,105 @@ augmentationType.append("gamma")
 crfNr.append(2)
 clipValue.append(90)
 dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.1)
+gamma.append(1.2)
+
+#Session 0
+data_folder.append("data/blender/drums")
+imageFiletype.append("png")
+datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("nerfacto")
+viewer.append("wandb") #viewer+wandb
+augmentationType.append("gamma")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(1.3)
+
+#Session 0
+data_folder.append("data/blender/drums")
+imageFiletype.append("png")
+datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("nerfacto")
+viewer.append("wandb") #viewer+wandb
+augmentationType.append("gamma")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(1.4)
+
+#Session 0
+data_folder.append("data/blender/drums")
+imageFiletype.append("png")
+datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("nerfacto")
+viewer.append("wandb") #viewer+wandb
+augmentationType.append("gamma")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(1.5)
+
+#Session 0
+data_folder.append("data/blender/drums")
+imageFiletype.append("png")
+datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("nerfacto")
+viewer.append("wandb") #viewer+wandb
+augmentationType.append("gamma")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(0.9)
+
+#Session 0
+data_folder.append("data/blender/drums")
+imageFiletype.append("png")
+datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("nerfacto")
+viewer.append("wandb") #viewer+wandb
+augmentationType.append("gamma")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(0.8)
+
+#Session 0
+data_folder.append("data/blender/drums")
+imageFiletype.append("png")
+datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("nerfacto")
+viewer.append("wandb") #viewer+wandb
+augmentationType.append("gamma")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(0.7)
+
+
+#Session 0
+data_folder.append("data/blender/drums")
+imageFiletype.append("png")
+datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("nerfacto")
+viewer.append("wandb") #viewer+wandb
+augmentationType.append("gamma")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(0.6)
+
+
+#Session 0
+data_folder.append("data/blender/drums")
+imageFiletype.append("png")
+datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("nerfacto")
+viewer.append("wandb") #viewer+wandb
+augmentationType.append("gamma")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(0.5)
 
 
 #----------------------------------------------------------------------
@@ -115,7 +190,7 @@ for i in range(no_of_sessions):
         command = ["ns-train", nerf_model[i], "--vis", viewer[i], datatype[i], "--data", data_folder[i]]
         command = [part for part in command if part.strip()] #removing possible blank spaces
         
-        process = subprocess.run(command)
+        #process = subprocess.run(command)
 
         del os.environ['WANDB_NAME']
 
@@ -139,6 +214,9 @@ for i in range(no_of_sessions):
         print("Saving inverse gamma corrected images to renders/"+runName+"/test/rgb/...")
         for image in gammaCorrectedNovelImages:
             image[1].save("renders/"+runName+"/test/rgb/"+image[0])
+            
+        #Calculating the quality metrics
+        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test", "renders/"+runName+"/test/rgb/", gamma[i])
         
         print("Training run " + str(i) + " quit.")
 

@@ -31,7 +31,8 @@ def loadImages(folder):
     print("Loading images from folder: " + abs_folder_path)
     
     if os.path.exists(abs_folder_path):
-        print("Found data folder")
+        #print("Found data folder")
+        pass
     else:
         print("Folder does not exist")
         print("Current working directory: " + os.getcwd())
@@ -73,7 +74,8 @@ def loadImagesWithFilenames(folder):
     print("Loading images with filenames from folder: " + abs_folder_path)
     
     if os.path.exists(abs_folder_path):
-        print("Found data folder")
+        #print("Found data folder")
+        pass
     else:
         print("Folder does not exist")
         print("Current working directory: " + os.getcwd())
