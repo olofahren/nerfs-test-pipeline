@@ -8,9 +8,33 @@ import dataaug_test
 import extract_views
 import sewar
 import PIL
+import video_creator
+#import video_metrics
+import pyfvvdp
+import time
+import glob
 
 
 
+def getQualityMetricsVideo(ref_file, TST_FILE):
+    display_name = 'standard_fhd'
+    media_folder = os.path.join(os.path.dirname(__file__), '..','example_media', 'aliasing')
+
+    #ref_file = os.path.join()
+    #TST_FILEs = glob.glob(os.path.join(media_folder, 'ferris-*-*.mp4'))
+
+    print("Testing video quality for files: ", TST_FILE, " with reference file: ", ref_file)
+    fv = pyfvvdp.fvvdp(display_name=display_name, heatmap=None)
+    
+    vs = pyfvvdp.fvvdp_video_source_file(TST_FILE, ref_file, display_photometry=display_name )
+
+    start = time.time()
+    Q_JOD_static, stats_static = fv.predict_video_source( vs )
+    end = time.time()
+
+    print( 'Quality for {}: {:.3f} JOD (took {:.4f} secs to compute)'.format(TST_FILE, Q_JOD_static, end-start) )
+    
+    return Q_JOD_static
 
 def getQualityMetrics(I1, I2):
     '''
@@ -44,6 +68,19 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData):
     
     #Very ugly solution for specifically the blender dataset    
     groundTruth = [image for image in groundTruth if "normal" not in image[0] and "depth" not in image[0]]
+        
+    #creating a ground thruth video
+    print("Rendering ground truth video...")
+    absFolder1 = os.path.abspath(folder1)
+    print("Rendering video from images in folder: ", absFolder1)
+    video_creator.createVideo(absFolder1, absFolder1 + "ground_truth.mp4")
+    
+    #get path to the file that has ending .mp4 in folder2
+    degradedVideoFiles = glob.glob(folder2 + "/*.mp4")
+    degradedVideoPath = degradedVideoFiles[0]  # Take the first MP4 file found
+
+    
+    Q_JOD_static = getQualityMetricsVideo(absFolder1 + "ground_truth.mp4", degradedVideoPath)
         
     os.system("rm "+folder2+"quality_metrics.txt")
 
@@ -113,10 +150,12 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData):
     with open(folder2+"quality_metrics.txt", "r") as file:
         filedata = file.read()
     with open(folder2+"quality_metrics.txt", "w") as file:
+        file.write("Dataset: " + folder1 + "\n")
         file.write("Gamma value: " + str(optionalMetaData) + "\n")
         file.write("Average PSNR: " + str(psnrAvg) + "\n")
         file.write("Average SSIM: " + str(ssimAvg) + "\n")
         file.write("Average LPIPS: " + str(lpipsAvg) + "\n")
+        file.write("FovVideoVDP score: " +str(Q_JOD_static) + "\n") 
         file.write("\n")
         file.write(filedata)
         
