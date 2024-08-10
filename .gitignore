@@ -9,3 +9,5 @@ __pycache__/
 .vscode/
 __pycache__/dataaug_test.cpython-38.pyc
 __pycache__/extract_views.cpython-38.pyc
+data/
+

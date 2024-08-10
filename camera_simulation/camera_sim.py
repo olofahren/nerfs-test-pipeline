@@ -2,6 +2,7 @@ import numpy as np
 import random
 import HDRutils
 
+
 class CameraSim:
   def __init__(self, type = 0):
 

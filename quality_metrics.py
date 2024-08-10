@@ -2,7 +2,7 @@ import os
 import sys
 import cv2
 import numpy as np
-import lpips
+#import lpips
 import torch
 import dataaug_test
 import extract_views
@@ -81,6 +81,8 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData):
 
     
     Q_JOD_static = getQualityMetricsVideo(absFolder1 + "ground_truth.mp4", degradedVideoPath)
+    
+    jod = str(Q_JOD_static)
         
     os.system("rm "+folder2+"quality_metrics.txt")
 
@@ -155,7 +157,7 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData):
         file.write("Average PSNR: " + str(psnrAvg) + "\n")
         file.write("Average SSIM: " + str(ssimAvg) + "\n")
         file.write("Average LPIPS: " + str(lpipsAvg) + "\n")
-        file.write("FovVideoVDP score: " +str(Q_JOD_static) + "\n") 
+        file.write("FovVideoVDP score: " +jod+ "\n") 
         file.write("\n")
         file.write(filedata)
         

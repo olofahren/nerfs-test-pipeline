@@ -10,6 +10,7 @@ import extract_views
 import gamma_correction
 import quality_metrics
 import video_creator
+import adjust_camera_pos
 
 #variable inits
 data_folder = []
@@ -22,7 +23,9 @@ imageFiletype = []
 crfNr = []
 clipValue = []
 gamma = []
+additionalSettings = []
 
+#ns-train nerfbusters --data /home/exjobb/oloah408/nerfs-test-pipeline/data/blender/hotdog/ --pipeline.nerf-checkpoint-path /home/exjobb/oloah408/nerfs-test-pipeline/outputs/unnamed/nerfacto/2024-07-17_023902/nerfstudio_models/step-000029999.ckpt nerfstudio-data --eval-mode train-split-fraction
 
 
 # WARNING: Using viewer will result in only the first run working 
@@ -33,156 +36,23 @@ gamma = []
 # mipnerf gets stuck and does not produce any results
 
 #-----------------------Specify settings for training-------------------
-no_of_sessions = 12
+no_of_sessions = 1
+
+#os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
 
 #Session 0
-
-
-#Session 0
-data_folder.append("data/blender/chair")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb1
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.5)
-
-#___________________________----        
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
+data_folder.append("data/eyefultower/riverview/images-jpeg-1k")
+imageFiletype.append("jpeg")
+datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 nerf_model.append("nerfacto")
 viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
+augmentationType.append("none")
 crfNr.append(2)
 clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.5)
+dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(1)
+additionalSettings.append("--pipeline.datamanager.train-num-images-to-sample-from=10")
 
-# #Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.6)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.7)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.8)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.9)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.0)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.1)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.2)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.3)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.4)
-
-#Session 0
-data_folder.append("data/blender/mic")
-imageFiletype.append("png")
-datatype.append("blender-data") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb1
-augmentationType.append("gamma")
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("blender") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.5)
 
 
 #----------------------------------------------------------------------
@@ -201,10 +71,10 @@ for i in range(no_of_sessions):
 
         time.sleep(1)
         
-        print("Running command: " + "ns-train "+ nerf_model[i] +" --vis "+ viewer[i] +" "+ datatype[i] +" --data "+ data_folder[i])
-        
-        command = ["ns-train", nerf_model[i], "--vis", viewer[i], datatype[i], "--data", data_folder[i]]
+        command = ["ns-train", nerf_model[i], "--vis", viewer[i], datatype[i], "--data", data_folder[i], additionalSettings[i], "--max-num-iterations=100"]
         command = [part for part in command if part.strip()] #removing possible blank spaces
+        
+        print("Running command: ", command)
         
         process = subprocess.run(command)
 
@@ -218,18 +88,23 @@ for i in range(no_of_sessions):
         elif dataset[i] == "eyefulTower": 
                 print("Restoring original images for session " + str(i))
                 dataaug_test.restoreOriginalImagesEyefulTower("~/oloah408/nerfs-test-pipeline/"+data_folder[i]+"/", imageFiletype[i])
-                
-        #Rendering the test dataset from the trained nerf model
-        runName = str(extract_views.getLatestFolder("outputs/unnamed/"+nerf_model[i]+"/"))
         
-        extract_views.renderTestViews("outputs/unnamed/"+nerf_model[i]+"/"+runName+"/config.yml", nerf_model[i])
+        
+        
+        #Rendering the test dataset from the trained nerf model
+        runName = str(extract_views.getLatestFolderConsideringDataset(dataset[i], nerf_model[i]))
+        
+        extract_views.renderTestViews(nerf_model[i], dataset[i])
+        
         
         novelRenderedImages = dataaug_test.loadImagesWithFilenames("renders/"+runName+"/test/rgb")
-        gammaCorrectedNovelImages = gamma_correction.adjustGamma(1/gamma[i], novelRenderedImages)
-        #save the gamma corrected images to the same folder
-        print("Saving inverse gamma corrected images to renders/"+runName+"/test/rgb/...")
-        for image in gammaCorrectedNovelImages:
-            image[1].save("renders/"+runName+"/test/rgb/"+image[0])
+        if gamma[i] != 1:
+                gammaCorrectedNovelImages = gamma_correction.adjustGamma(1/gamma[i], novelRenderedImages)
+        
+                #save the gamma corrected images to the same folder
+                print("Saving inverse gamma corrected images to renders/"+runName+"/test/rgb/...")
+                for image in gammaCorrectedNovelImages:
+                    image[1].save("renders/"+runName+"/test/rgb/"+image[0])
             
         print("Rendering training set video...")
         video_creator.createVideo("renders/"+runName+"/test/rgb", "renders/"+runName+"/test/rgb/"+nerf_model[i]+"_gamma_"+str(gamma[i])+".mp4")

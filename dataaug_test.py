@@ -159,11 +159,12 @@ def copyOriginalImagesBlender(root, train_folder):
     
 def copyOriginalImagesEyefulTower(root):
     user = getpass.getuser()
+    print("Creating backup of original images...")
     root = os.path.expanduser(root)
     os.system("sudo mkdir " + root + "original_images")
     #check if folders already exist
     if not os.path.exists(root + "original_images/0"):
-        for i in range(0,9):
+        for i in range(10,32):
             os.system("sudo cp -r "+ root + "/"+str(i) + " " + root + "original_images/"+str(i) )
             subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + "original_images/"+str(i)])
 # -------------------------COPY FILES-------------------------
