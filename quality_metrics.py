@@ -2,7 +2,7 @@ import os
 import sys
 import cv2
 import numpy as np
-#import lpips
+import lpips
 import torch
 import dataaug_test
 import extract_views
@@ -47,7 +47,7 @@ def getQualityMetrics(I1, I2):
     #lpips = sewar.full_ref.lpips(I1, I2)
     return psnr, ssim
 
-def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData):
+def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
     '''
     :param folder1: represents original image folder
     :param folder2: represents degraded image folder

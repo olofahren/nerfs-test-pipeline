@@ -187,13 +187,19 @@ def restoreOriginalImagesEyefulTower(root, imageFiletype):
         os.system("sudo sed -i 's/.png/.exr/g' "+root+"md5sums.txt")
         os.system("sudo sed -i 's/.png/.exr/g' "+root+"transforms.json")
         
-    for i in range(0,9):
+    #get number of folders in root
+    num_folders = len([name for name in os.listdir(root) if os.path.isdir(os.path.join(root, name))])
+    
+    for i in range(num_folders):
         print("Restoring original images from " + root + "original_images/"+str(i)+ " to " + root + str(i))
         os.system("sudo rm -r " + root + str(i))
     
     #copy the entire contents of original_images to the current folder
     os.system("sudo cp -r " + root + "original_images/*"+ " " + root)
     subprocess.run(["sudo", "chown", "-R", user + ":" + user, root])
+    
+    #remove the original_images folder
+    os.system("sudo rm -r " + root + "original_images")
     
 # -------------------------RESTORE FILES-------------------------
 

@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 from subprocess import check_output
@@ -45,14 +46,28 @@ data_folder.append("data/eyefultower/riverview/images-jpeg-1k")
 imageFiletype.append("jpeg")
 datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 nerf_model.append("nerfacto")
+viewer.append("viewer") #viewer+wandb
+augmentationType.append("none")
+crfNr.append(2)
+clipValue.append(90)
+dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
+gamma.append(1)
+additionalSettings.append("")
+#"--pipeline.datamanager.train-num-images-to-sample-from=100"
+
+#Session 0
+data_folder.append("data/eyefultower/riverview/images-jpeg-1k")
+imageFiletype.append("jpeg")
+datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
+nerf_model.append("instant-ngp")
 viewer.append("wandb") #viewer+wandb
 augmentationType.append("none")
 crfNr.append(2)
 clipValue.append(90)
 dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 gamma.append(1)
-additionalSettings.append("--pipeline.datamanager.train-num-images-to-sample-from=10")
-
+additionalSettings.append("")
+#"--pipeline.datamanager.train-num-images-to-sample-from=100"
 
 
 #----------------------------------------------------------------------
@@ -71,10 +86,10 @@ for i in range(no_of_sessions):
 
         time.sleep(1)
         
-        command = ["ns-train", nerf_model[i], "--vis", viewer[i], datatype[i], "--data", data_folder[i], additionalSettings[i], "--max-num-iterations=100"]
+        command = ["ns-train", nerf_model[i], "--vis", viewer[i], datatype[i], "--data", data_folder[i], additionalSettings[i]]
         command = [part for part in command if part.strip()] #removing possible blank spaces
         
-        print("Running command: ", command)
+        print("Running command: ", ' '.join(command))
         
         process = subprocess.run(command)
 
@@ -94,6 +109,17 @@ for i in range(no_of_sessions):
         #Rendering the test dataset from the trained nerf model
         runName = str(extract_views.getLatestFolderConsideringDataset(dataset[i], nerf_model[i]))
         
+        
+        if dataset[i] == "eyefulTower":
+                testSetFileNames = []
+                #extract the test set from the json file
+                print("Extracting test set from json file...")
+                data = json.load(open(data_folder[i]+"/transforms.json"))
+                #extract all file names in the test_filenames section
+                for filename in data['test_filenames']:
+                        testSetFileNames.append(filename)
+                        
+        
         extract_views.renderTestViews(nerf_model[i], dataset[i])
         
         
@@ -110,8 +136,11 @@ for i in range(no_of_sessions):
         video_creator.createVideo("renders/"+runName+"/test/rgb", "renders/"+runName+"/test/rgb/"+nerf_model[i]+"_gamma_"+str(gamma[i])+".mp4")
         
         #Calculating the quality metrics
-        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test", "renders/"+runName+"/test/rgb/", gamma[i])
-        
+        if dataset[i] == "blender":
+              quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test", "renders/"+runName+"/test/rgb/", gamma[i], dataset[i])
+        elif dataset[i] == "eyefulTower":
+                #NOTE: change this folder if test set is changed in transform.json
+                quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/24", "renders/"+runName+"/test/rgb/", gamma[i], dataset[i])
         
         
         

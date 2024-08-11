@@ -23,11 +23,13 @@ def renderTestViews(nerfModel, dataset):
     
     if dataset == "eyefulTower":
         runName = str(getLatestFolder("outputs/images-jpeg-1k/"+nerfModel+"/"))
-        configPath = "outputs/images-jpeg-1k/"+nerfModel+"/"+runName+"/config.yml"        
+        configPath = "outputs/images-jpeg-1k/"+nerfModel+"/"+runName+"/config.yml"      
         
-        print("ns-render dataset --load-config " + configPath + " --output-path renders/"+ runName +" --rendered-output-names rgb --split train")
+        nerfstudio.data.dataparsers.base_dataparser.DataParser("nerfs-test-pipeline/outputs/images-jpeg-1k/instant-ngp/2024-08-10_161103/config.yml")  
+        
+        #print("ns-render dataset --load-config " + configPath + " --output-path renders/"+ runName +" --rendered-output-names rgb")
         print("Rendering test views... This may take a while.")
-        os.system("ns-render dataset --load-config " + configPath + " --output-path renders/"+ runName +" --rendered-output-names rgb --data data/eyefultower/riverview/images-jpeg-1k --split val")
+        os.system("ns-render dataset --load-config " + configPath + " --output-path renders/"+ runName +" --rendered-output-names rgb --data data/eyefultower/riverview/images-jpeg-1k --split test")
     else:
         print("Invalid dataset in extract_views.py")
         
