@@ -1,4 +1,6 @@
+import gc
 import glob
+import math
 import os
 import subprocess
 from PIL import Image
@@ -68,7 +70,27 @@ def loadImagesFilenames(folder):
                     print("Error opening image " + filename)
     return filenames    
 
-def loadImagesWithFilenames(folder):
+def loadImagesWithFilenames(folder, dataset, includeList=[]):
+    """
+    Loads images with their filenames from a specified folder and dataset.
+
+    Args:
+        folder (str): The path to the folder containing the images.
+        dataset (str): The name of the dataset to load. Currently supports "eyefulTower".
+
+    Returns:
+        list: A list of tuples, where each tuple contains the subfolder name and the filename of an image.
+              If the folder does not exist, returns an empty list.
+
+    Raises:
+        IOError: If there is an error opening an image file.
+    
+    Example:
+        images = loadImagesWithFilenames("~/data/images", "eyefulTower")
+        for subfolder, filename in images:
+            print(f"Subfolder: {subfolder}, Filename: {filename}")
+    """
+    
     images = []
     abs_folder_path = os.path.expanduser(folder)
     print("Loading images with filenames from folder: " + abs_folder_path)
@@ -81,17 +103,46 @@ def loadImagesWithFilenames(folder):
         print("Current working directory: " + os.getcwd())
         return images  # Exit early if folder doesn't exist
 
-    try:
-        for filename in os.listdir(abs_folder_path):
-            if filename.endswith(('.png', '.jpg', '.jpeg')):
-                img_path = os.path.join(abs_folder_path, filename)
-                try:
-                    with Image.open(img_path) as img:
-                        images.append((filename, img.copy()))
-                except IOError:
-                    print("Error opening image " + filename)
-    except Exception as e:
-        print("Error accessing folder " + abs_folder_path + ": " + str(e))
+    if dataset == "eyefulTower":
+        print("Loading images with filenames from Eyeful Tower dataset")
+        try:
+            #load all images within all subfolders with their respective filenames
+            for root, dirs, files in os.walk(abs_folder_path):
+                #do not load the images in original_images folder
+                if "original_images" in root:
+                    continue
+                for filename in files:
+                    if includeList:
+                        if filename.endswith(('.exr', ".png", ".jpg", "jpeg")) and filename in includeList:
+                            img_path = os.path.join(root, filename)
+                            try:
+                                with Image.open(img_path) as img:
+                                    images.append((filename, img.copy()))
+                            except IOError:
+                                print("Error opening image " + filename)
+                    else:
+                        if filename.endswith(('.exr', ".png", ".jpg", "jpeg")):
+                            img_path = os.path.join(root, filename)
+                            try:
+                                with Image.open(img_path) as img:
+                                    images.append((filename, img.copy()))
+                            except IOError:
+                                print("Error opening image " + filename)
+        except Exception as e:
+            print("Error accessing folder " + abs_folder_path + ": " + str(e))
+          
+    else: 
+        try:
+            for filename in os.listdir(abs_folder_path):
+                if filename.endswith(('.png', '.jpg', '.jpeg')):
+                    img_path = os.path.join(abs_folder_path, filename)
+                    try:
+                        with Image.open(img_path) as img:
+                            images.append((filename, img.copy()))
+                    except IOError:
+                        print("Error opening image " + abs_folder_path)
+        except Exception as e:
+            print("Error accessing folder " + abs_folder_path + ": " + str(e))
 
     return images
 
@@ -113,6 +164,15 @@ def saveImagesBlender(images, folder):
 
     for i, image in enumerate(images):
         saveImage(image[1], abs_folder_path+ "/" + image[0])
+        
+def saveImagesEyefultowerJPEG(images, folder):
+    # Save images in folder
+    abs_folder_path = os.path.expanduser(folder)
+    print("Saving images to folder " + folder)
+
+    for i, image in enumerate(images):
+        imageFolderNumber = image[0].split('_')[0]
+        saveImage(image[1], abs_folder_path+ "/" + imageFolderNumber +"/" + image[0])
 
         
 def saveImageEyefulTower(image, filename):
@@ -164,7 +224,7 @@ def copyOriginalImagesEyefulTower(root):
     os.system("sudo mkdir " + root + "original_images")
     #check if folders already exist
     if not os.path.exists(root + "original_images/0"):
-        for i in range(10,32):
+        for i in range(0,32):
             os.system("sudo cp -r "+ root + "/"+str(i) + " " + root + "original_images/"+str(i) )
             subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + "original_images/"+str(i)])
 # -------------------------COPY FILES-------------------------
@@ -206,12 +266,12 @@ def restoreOriginalImagesEyefulTower(root, imageFiletype):
 
 # -------------------------AUGMENT IMAGES-------------------------
 
-def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType, cameraResponseFunction=False, clipValue=False, gamma = 1):
+def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType, cameraResponseFunction=False, clipValue=False, gamma = 1, testImagesFileNames = [], allUsableFiles =[]):
     #if dataset used is BLENDER
     if dataset == "blender":
         copyOriginalImagesBlender(root, train_folder)
         print("Load from "+ root + train_folder)
-        images_train = loadImagesWithFilenames(root + train_folder)
+        images_train = loadImagesWithFilenames(root + train_folder, "blender")
         if dataAugmentationType == "blur":
                 print("Applying blur to images")
                 augmented_images_train = [addBlur(image) for image in images_train]
@@ -244,7 +304,7 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
         copyOriginalImagesEyefulTower(root)   
         #load images from all folders
         images_train = []
-        augmented_image_train = []
+        augmented_images_train = []
         
         root = os.path.expanduser(root)
 
@@ -296,7 +356,32 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
                     saveImageEyefulTower(L, img_source)
                 print("_____________________________________________________________")
 
-
+        elif dataAugmentationType == "gamma":
+            
+            training_images = loadImagesWithFilenames(root, "eyefulTower", allUsableFiles)
+            print("Length of training images list: "+str(len(training_images)))
+            
+            print("Applying gamma correction to images")
+            
+            #split into batches of 1000 images to prevent memory issues
+            batch_size = 1000
+            num_batches = math.ceil(len(training_images)//batch_size) + 1
+            print("Number of gamma correction batches: "+str(num_batches))
+            for i in range(num_batches):
+                print("Gamma correction batch: "+str(i))
+                batch = training_images[i*batch_size:(i+1)*batch_size]
+                augmented_images_train = gamma_correction.adjustGamma(gamma, batch)
+                saveImagesEyefultowerJPEG(augmented_images_train, root)
+                del augmented_images_train
+                del batch
+                gc.collect()
+            
+            del training_images
+            gc.collect()
+            #augmented_images_train = gamma_correction.adjustGamma(gamma, training_images)
+            
+            #saveImagesEyefultowerJPEG(augmented_images_train, root)
+            
         elif dataAugmentationType == "none":
             print("No data augmentation applied")
         else:

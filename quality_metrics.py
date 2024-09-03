@@ -16,6 +16,9 @@ import glob
 
 
 
+
+
+
 def getQualityMetricsVideo(ref_file, TST_FILE):
     display_name = 'standard_fhd'
     media_folder = os.path.join(os.path.dirname(__file__), '..','example_media', 'aliasing')
@@ -59,10 +62,10 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
     ssimAll = []
     psnrAll = []
     lpipsAll = []
-    
-    groundTruth = dataaug_test.loadImagesWithFilenames(folder1)
-    degraded = dataaug_test.loadImagesWithFilenames(folder2)
-    
+
+    groundTruth = dataaug_test.loadImagesWithFilenames(folder1, "other")
+    degraded = dataaug_test.loadImagesWithFilenames(folder2, "eyefulTower")
+
     groundTruth.sort()
     degraded.sort()
     
@@ -73,14 +76,14 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
     print("Rendering ground truth video...")
     absFolder1 = os.path.abspath(folder1)
     print("Rendering video from images in folder: ", absFolder1)
-    video_creator.createVideo(absFolder1, absFolder1 + "ground_truth.mp4")
+    video_creator.createVideo(absFolder1, absFolder1 + "/ground_truth.mp4")
     
     #get path to the file that has ending .mp4 in folder2
     degradedVideoFiles = glob.glob(folder2 + "/*.mp4")
     degradedVideoPath = degradedVideoFiles[0]  # Take the first MP4 file found
 
     
-    Q_JOD_static = getQualityMetricsVideo(absFolder1 + "ground_truth.mp4", degradedVideoPath)
+    Q_JOD_static = getQualityMetricsVideo(absFolder1 + "/ground_truth.mp4", degradedVideoPath)
     
     jod = str(Q_JOD_static)
         
@@ -161,6 +164,8 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
         file.write("\n")
         file.write(filedata)
         
+
+    os.system("rm -r "+folder1)
     print("Quality metrics computed and saved to " + folder2 + "quality_metrics.txt")
     
     
