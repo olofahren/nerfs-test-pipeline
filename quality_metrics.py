@@ -145,6 +145,10 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
             file.write("SSIM: " + str(ssim) + "\n")
             file.write("LPIPS: " + str(lpips_val) + "\n")
             file.write("\n")    
+        
+        #also write to a csv file
+        with open(folder2+"quality_metrics.csv", "a") as file:
+            file.write(groundTruth[i][0] + "," + str(psnr) + "," + str(ssim) + "," + str(lpips_val) + "\n")
             
     #Calculate average
     psnrAvg = sum(psnrAll)/len(psnrAll)
@@ -156,7 +160,10 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
         filedata = file.read()
     with open(folder2+"quality_metrics.txt", "w") as file:
         file.write("Dataset: " + folder1 + "\n")
-        file.write("Gamma value: " + str(optionalMetaData) + "\n")
+        if optionalMetaData == "histogrameq":
+            file.write("Histogram equalization: " + "\n")
+        if optionalMetaData == int or float:
+            file.write("Gamma value: " + str(optionalMetaData) + "\n")
         file.write("Average PSNR: " + str(psnrAvg) + "\n")
         file.write("Average SSIM: " + str(ssimAvg) + "\n")
         file.write("Average LPIPS: " + str(lpipsAvg) + "\n")
@@ -164,6 +171,7 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
         file.write("\n")
         file.write(filedata)
         
+    #write a  
 
     os.system("rm -r "+folder1)
     print("Quality metrics computed and saved to " + folder2 + "quality_metrics.txt")
