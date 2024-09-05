@@ -11,7 +11,9 @@ import camera_simulation.camera_sim as camera_sim
 import camera_simulation.img_io as img_io
 import shutil
 import getpass
+#from entropy_measurement import calculateAvgSceneEntropy
 import gamma_correction
+import histogram_equalization
 
 #------------------------------Settings------------------------------
 
@@ -113,6 +115,7 @@ def loadImagesWithFilenames(folder, dataset, includeList=[]):
                     continue
                 for filename in files:
                     if includeList:
+                        #print("Include list provided")
                         if filename.endswith(('.exr', ".png", ".jpg", "jpeg")) and filename in includeList:
                             img_path = os.path.join(root, filename)
                             try:
@@ -121,6 +124,7 @@ def loadImagesWithFilenames(folder, dataset, includeList=[]):
                             except IOError:
                                 print("Error opening image " + filename)
                     else:
+                        #print("Include list NOT provided")
                         if filename.endswith(('.exr', ".png", ".jpg", "jpeg")):
                             img_path = os.path.join(root, filename)
                             try:
@@ -361,6 +365,10 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
             training_images = loadImagesWithFilenames(root, "eyefulTower", allUsableFiles)
             print("Length of training images list: "+str(len(training_images)))
             
+            
+            
+
+            
             print("Applying gamma correction to images")
             
             #split into batches of 1000 images to prevent memory issues
@@ -376,18 +384,83 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
                 del batch
                 gc.collect()
             
+            
+            
+            
+            
+            #training_images_wo_filenames = [image[1] for image in training_images]
+            
             del training_images
             gc.collect()
+            
+            #global averageSceneEntropy
+            #averageSceneEntropy = calculateAvgSceneEntropy(training_images_wo_filenames)
+            #print("Average scene entropy: "+str(averageSceneEntropy))
+            
+            #del training_images_wo_filenames
+            #gc.collect()
             #augmented_images_train = gamma_correction.adjustGamma(gamma, training_images)
             
             #saveImagesEyefultowerJPEG(augmented_images_train, root)
+            #return averageSceneEntropy
+            
+        elif(dataAugmentationType == "histogrameq"):
+            print("Performing histogram equalization...")
+            #load images
+            training_images = loadImagesWithFilenames(root, "eyefulTower", allUsableFiles)
+            
+            #mmm ugly code, no no no
+            global histeqfunc, bincenters
+            
+            training_images_wo_filenames = [image[1] for image in training_images]
+            histeqfunc, bincenters = histogram_equalization.histeq(training_images_wo_filenames, 100)
+            #print(histeqfunc)
+            
+            batch_size = 500
+            num_batches = math.ceil(len(training_images)//batch_size) + 1
+            print("Number of histogram equalisation application batches: "+str(num_batches))
+            
+            #apply histogram equalization to images
+            print("Applying histogram equalization to images...")
+            for i in range(num_batches):
+                batch = training_images[i*batch_size:(i+1)*batch_size]
+                
+                #apply the histogram equalization function to the images
+                augmented_images_train = []
+                for image in batch:
+                    # Normalize image between 0 and 1
+                    normalized_image = (image[1] - np.min(image[1])) / (np.max(image[1]) - np.min(image[1]))
+                    #print(f"Normalized image min: {np.min(normalized_image)}, max: {np.max(normalized_image)}")
+                    
+                    # Apply histogram equalization
+                    augmented_image_data = np.interp(normalized_image, bincenters, histeqfunc)
+                    #print(f"Augmented image data min: {np.min(augmented_image_data)}, max: {np.max(augmented_image_data)}")
+                    
+                    # Scale back to [0, 255]
+                    augmented_image_data = (augmented_image_data * 255).astype(np.uint8)
+                    augmented_image = Image.fromarray(augmented_image_data)
+                    augmented_images_train.append((image[0], augmented_image))
+
+
+                
+                saveImagesEyefultowerJPEG(augmented_images_train, root)
+                del augmented_images_train
+                del batch
+                gc.collect()        
+            
+            del training_images
+            gc.collect()
+            
+            
+            
+            
+
             
         elif dataAugmentationType == "none":
             print("No data augmentation applied")
         else:
             print("Invalid data augmentation type")
             return 0
-        
     else:
         print("Invalid dataset")
         return 0
