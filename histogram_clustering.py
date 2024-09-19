@@ -122,21 +122,53 @@ def calculateAverageQualityMeasuresGivenCluster(csvQualityFile, scenePath, numCl
 
 # Example usage
 scenePath = "/home/exjobb/oloah408/nerfs-test-pipeline/data/eyefultower/riverview/images-jpeg-1k/"
-csvFilePath = "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-05_153828/test/rgb/quality_metrics.csv"
 
+# csvFilePaths = ["/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_092634/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_095223/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_101735/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_104248/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_124236/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_130838/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_133501/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_140821/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_143524/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_150132/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_153741/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_160348/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_162900/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_165412/test/rgb/",
+#                 "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-09_171921/test/rgb/",]
 
-cluster0, cluster1, cluster2 = calculateAverageQualityMeasuresGivenCluster(csvFilePath, scenePath, 3)
+#get the latest folder from the renders directory
+rendersPath = "/home/exjobb/oloah408/nerfs-test-pipeline/renders/"
+folders = os.listdir(rendersPath)
+folders.sort(reverse=True)
 
-print("Cluster 0: PSNR: ", cluster0[0], " SSIM: ", cluster0[1], " LPIPS: ", cluster0[2])
-print("Cluster 1: PSNR: ", cluster1[0], " SSIM: ", cluster1[1], " LPIPS: ", cluster1[2])
-print("Cluster 2: PSNR: ", cluster2[0], " SSIM: ", cluster2[1], " LPIPS: ", cluster2[2])
+gammaValues = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
+gammaValues.sort(reverse=True)
 
-# scenePath = "/home/exjobb/oloah408/nerfs-test-pipeline/data/eyefultower/riverview/images-jpeg-1k/"
-# csvFilePath = "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-05_153828/test/rgb/quality_metrics.csv"
-# cluster0, cluster1, cluster2 = calculateAverageQualityMeasuresGivenCluster(csvFilePath, scenePath, 3)
+for i in range(len(gammaValues)):
+    if i >= len(folders):
+        print("Not enough folders to match the number of gamma values.")
+        break
+    #get the nthn latest folder from the renders directory
+    csvFilePath = os.path.join(rendersPath, folders[i], "test/rgb/quality_metrics.csv")
+    print("Calculating average quality measures for cluster 0, 1 and 2 for gamma value: ", gammaValues[i])
+    print("CSV file path: ", csvFilePath)
+    cluster0, cluster1, cluster2 = calculateAverageQualityMeasuresGivenCluster(csvFilePath, scenePath, 3)
 
-# print("Cluster 0: PSNR: ", cluster0[0], " SSIM: ", cluster0[1], " LPIPS: ", cluster0[2])
-# print("Cluster 1: PSNR: ", cluster1[0], " SSIM: ", cluster1[1], " LPIPS: ", cluster1[2])
-# print("Cluster 2: PSNR: ", cluster2[0], " SSIM: ", cluster2[1], " LPIPS: ", cluster2[2])
+    print("Cluster 0: PSNR: ", cluster0[0], " SSIM: ", cluster0[1], " LPIPS: ", cluster0[2])
+    print("Cluster 1: PSNR: ", cluster1[0], " SSIM: ", cluster1[1], " LPIPS: ", cluster1[2])
+    print("Cluster 2: PSNR: ", cluster2[0], " SSIM: ", cluster2[1], " LPIPS: ", cluster2[2])
 
+# Output the values to a file in the same directory as the CSV file
+    outputFilePath = csvFilePath.split("quality_metrics.csv")[0] + "cluster_quality_metrics.txt"
+    with open(outputFilePath, "w") as outputFile:
+        outputFile.write("Cluster\t0\t1\t2\n")
+        outputFile.write(f"Avg PSNR\t{cluster0[0]}\t{cluster1[0]}\t{cluster2[0]}\n")
+        outputFile.write(f"Avg SSIM\t{cluster0[1]}\t{cluster1[1]}\t{cluster2[1]}\n")
+        outputFile.write(f"Avg LPIPS\t{cluster0[2]}\t{cluster1[2]}\t{cluster2[2]}\n")
+    outputFile.close()
+    
 
+#0 = dark, 1 = medium, 2 = light (riverview scene)
