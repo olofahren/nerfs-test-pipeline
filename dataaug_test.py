@@ -404,6 +404,11 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
             #saveImagesEyefultowerJPEG(augmented_images_train, root)
             #return averageSceneEntropy
             
+        elif dataAugmentationType == "loss_gamma":
+            print("Applying gamma correction in the loss function with gamma value: "+str(gamma))
+            os.environ['GAMMA_VALUE'] = str(gamma)
+
+            
         elif(dataAugmentationType == "histogrameq"):
             print("Performing histogram equalization...")
             #load images
