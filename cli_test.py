@@ -55,282 +55,266 @@ no_of_sessions = 15
 #___________________________
 
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma") #gamma/histogrameq etc.
+# augmentationType.append("loss_gamma") #gamma/histogrameq etc.
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.1)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.2)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.3)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.4)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.5)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.6)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.7)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.8)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(0.9)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(1)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(1.1)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(1.2)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(1.3)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(1.4)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
 # #--max-num-iterations=100
 
-# data_folder.append("data/eyefultower/apartment/images-jpeg-1k")
+# data_folder.append("data/eyefultower/office1b/images-jpeg-1k")
 # imageFiletype.append("jpeg")
 # datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
 # nerf_model.append("nerfacto")
 # viewer.append("wandb") #viewer+wandb
-# augmentationType.append("gamma")
+# augmentationType.append("loss_gamma")
 # crfNr.append(2)
 # clipValue.append(90)
 # dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
 # gamma.append(1.5)
 # splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
 # testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-# testSetFolder.append("data/eyefultower/apartment/images-jpeg-1k/22")
+# testSetFolder.append("data/eyefultower/office1b/images-jpeg-1k/22")
 # additionalSettings.append("")
-#--max-num-iterations=100
+# #--max-num-iterations=100
 
 
 ############################################################3
 #TEST RUN BELOW
 
 
-data_folder.append("data/eyefultower/riverview/images-jpeg-1k")
-imageFiletype.append("jpeg")
-datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma") #gamma/histogrameq/camera etc.
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(0.6)
-splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
-testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-testSetFolder.append("data/eyefultower/riverview/images-jpeg-1k/22")
-additionalSettings.append("")
-#--max-num-iterations=100
-
-data_folder.append("data/eyefultower/riverview/images-jpeg-1k")
-imageFiletype.append("jpeg")
-datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
-nerf_model.append("nerfacto")
-viewer.append("wandb") #viewer+wandb
-augmentationType.append("gamma") #gamma/histogrameq/camera etc.
-crfNr.append(2)
-clipValue.append(90)
-dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
-gamma.append(1.0)
-splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
-testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
-testSetFolder.append("data/eyefultower/riverview/images-jpeg-1k/22")
-additionalSettings.append("")
-#--max-num-iterations=100
+# data_folder.append("data/eyefultower/riverview/images-jpeg-1k")
+# imageFiletype.append("jpeg")
+# datatype.append("") #blender-data/colmap, etc. Blank for EyefulTower
+# nerf_model.append("nerfacto")
+# viewer.append("wandb") #viewer+wandb
+# augmentationType.append("loss_gamma") #gamma/loss_gamma/histogrameq/camera etc.
+# crfNr.append(2)
+# clipValue.append(90)
+# dataset.append("eyefulTower") #eyefulTower, blender, colmap. For correct folder management
+# gamma.append(0.1)
+# splitSettings.append([0.9, 0.1, 0.1, 1000]) #train, eval, test, no of images in total // If testSetMode = "folder" -> set train + eval = 1
+# testSetMode.append("folder") #"random"/ "folder" /// If folder, test set is overridden with entire contents of folder
+# testSetFolder.append("data/eyefultower/riverview/images-jpeg-1k/22")
+# additionalSettings.append("--max-num-iterations=1000")
+# #--max-num-iterations=100
 
 
 
@@ -348,12 +332,13 @@ for i in range(no_of_sessions):
         runName = "Dataset:"+dataset[i] + "_Model:" + nerf_model[i] + "_Augmentation:"+ augmentationType[i] + "_CRFnr:"+ str(crfNr[i]) + "_ClipValue"+ str(clipValue[i]) + "_Gamma:"+ str(gamma[i])
                 
         os.environ['WANDB_NAME'] = runName
+        os.environ['GAMMA_VALUE'] = str(1.0)
         #os.environ["WANDB_MODE"] = "disabled"
         
         #create a backup of the transforms file
         os.system("cp "+data_folder[i]+"/transforms.json "+data_folder[i]+"/transforms_copy.json")
         
-        #/home/exjobb/oloah408/nerfs-test-pipeline/data/eyefultower/apartment/images-jpeg-1k/
+        #/home/exjobb/oloah408/nerfs-test-pipeline/data/eyefultower/office1b/images-jpeg-1k/
         
         if dataset[i] == "eyefulTower":
                 [trainSplitFileNames, 
@@ -364,7 +349,7 @@ for i in range(no_of_sessions):
         
         #Fixing the training data by copying the images to preserve the original data
         # and applying data augmentations to the training data
-        if augmentationType[i] == "gamma":
+        if augmentationType[i] == "gamma" or augmentationType[i] == "loss_gamma":
                 dataaug_test.augmentImages("~/oloah408/nerfs-test-pipeline/"+data_folder[i]+"/", "train", "test", "val", dataset[i], augmentationType[i], crfNr[i], clipValue[i], gamma[i], testSplitFileNames, imagesToAugment)
         else: 
                 dataaug_test.augmentImages("~/oloah408/nerfs-test-pipeline/"+data_folder[i]+"/", "train", "test", "val", dataset[i], augmentationType[i], crfNr[i], clipValue[i], 0, testSplitFileNames, imagesToAugment)
@@ -443,11 +428,13 @@ for i in range(no_of_sessions):
                 #copy the test files into a new folder in the same dir as the data.
                 set_splits.makeTestSetFolder(testSplitFileNames, data_folder[i])
                 if augmentationType[i] == "gamma":
-                        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test_images", "renders/"+runName+"/test/rgb/", gamma[i], dataset[i])
+                        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test_images", "renders/"+runName+"/test/rgb/", gamma[i], dataset[i], "gamma")
                 elif augmentationType[i] == "histogrameq":
-                        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test_images", "renders/"+runName+"/test/rgb/", "histogrameq", dataset[i])
+                        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test_images", "renders/"+runName+"/test/rgb/", "histogrameq", dataset[i],"histogrameq")
                 elif augmentationType[i] == "none":
-                        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test_images", "renders/"+runName+"/test/rgb/", "none", dataset[i])
+                        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test_images", "renders/"+runName+"/test/rgb/", "none", dataset[i],"none")
+                elif augmentationType[i] == "loss_gamma":
+                        quality_metrics.getQualityMetricsFromFolder(data_folder[i]+"/test_images", "renders/"+runName+"/test/rgb/", gamma[i], dataset[i], "loss_gamma")
         #Restore transforms.json
         os.system("rm "+data_folder[i]+"/transforms.json")
         os.system("mv "+data_folder[i]+"/transforms_copy.json "+data_folder[i]+"/transforms.json")
