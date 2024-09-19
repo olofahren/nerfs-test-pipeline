@@ -5,18 +5,22 @@ import matplotlib.pyplot as plt
 # Code in this file is based on or written by 
 # Gabriel Eilertsen
 
-def histeq(x, bins=50, batch_size=100):
-    """Compute histogram equalization function.
-    
-    Parameters
-    ----------
-    x : ndarray
-        Input data. A 4D array of all images in the scene/dataset
+import numpy as np
+import gc
+
+def histeq(x, bins=256, batch_size=100):
+    """
+    Perform histogram equalization on a set of images.
+
+    Parameters:
+    x : list of ndarray
+        List of images to be equalized.
     bins : int
-        Number of bins in the histogram.
-        
-    Returns
-    -------
+        Number of bins for the histogram.
+    batch_size : int
+        Number of images to process in each batch.
+
+    Returns:
     t : ndarray
         Histogram equalization function.
     bc : ndarray
@@ -25,63 +29,47 @@ def histeq(x, bins=50, batch_size=100):
     
     print("Computing histogram equalization function...")
     # Bin edges (for histogram computation)
-    b = np.linspace(0,1,bins+1)
+    b = np.linspace(0, 1, bins + 1)
 
     # Bin centers (for interpolation)
-    bc = (b[1:]+b[:-1])/2
+    bc = (b[1:] + b[:-1]) / 2
     
     # Number of images
     N = len(x)
 
-    #NOTE: Memory intensive operation, perhaps fix this. Works for now, but might be a problem for larger datasets
-    print("Normalizing images...")
-    for i in range(N):
-        x[i] = (x[i] - np.min(x[i])) / (np.max(x[i]) - np.min(x[i]))
-        
-    
-
     # Initialize histogram
     H = np.zeros(bins)
 
-    # Process images in batches
+    # Process images in batches for normalization and histogram calculation
     num_batches = (N + batch_size - 1) // batch_size  # Calculate number of batches
-    print("Calculating histogram for images in "+ str(num_batches)+" batches...")
+    print("Processing images in " + str(num_batches) + " batches...")
     for batch_idx in range(num_batches):
-        print("Batch "+str(batch_idx+1)+"/"+str(num_batches))
+        print("Batch " + str(batch_idx + 1) + "/" + str(num_batches))
         start_idx = batch_idx * batch_size
         end_idx = min(start_idx + batch_size, N)
-        batch = x[start_idx:end_idx]
-
-        # Calculate histogram for each image in the batch and accumulate
-        for image in batch:
-            h, _ = np.histogram(image, bins=b)
+        for i in range(start_idx, end_idx):
+            # Normalize the image
+            image = x[i]
+            normalized_image = (image - np.min(image)) / (np.max(image) - np.min(image))
+            
+            # Calculate histogram for the normalized image and accumulate
+            h, _ = np.histogram(normalized_image, bins=b)
             H += h
-            del h  # Free memory
+            
+            # Free memory
+            del normalized_image
+            del h
             gc.collect()
-    
-        del batch
-        gc.collect()
-    
-    # H = H / N
-    
-    # Histogram equalization function (CDF)
-    t = np.cumsum(H)/np.sum(H)
-    # t = t / t[-1]
 
-    print("Histogram equalization function computed!")
+    # Normalize the histogram
+    H = H / np.sum(H)
 
-    # Plotting for debugging
-    plt.figure(figsize=(14, 5))
-    plt.subplot(1, 2, 1)
-    plt.bar(bc, H, width=0.8 * (bc[-1] - bc[0]) / bins)
-    plt.title('Average histogram')
-    plt.subplot(1, 2, 2)
-    plt.plot(bc, t)
-    plt.plot(t, bc)
-    plt.title('Histogram equalization function')
-    plt.legend(['inverse', 'forward'])
-    plt.show()
-    
+    # Compute the cumulative distribution function (CDF)
+    cdf = np.cumsum(H)
+
+    # Interpolate the CDF to get the equalization function
+    t = np.interp(bc, bc, cdf)
+
     return t, bc
 
 # Example usage
