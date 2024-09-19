@@ -50,7 +50,7 @@ def getQualityMetrics(I1, I2):
     #lpips = sewar.full_ref.lpips(I1, I2)
     return psnr, ssim
 
-def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
+def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset, augmentationType):
     '''
     :param folder1: represents original image folder
     :param folder2: represents degraded image folder
@@ -163,7 +163,11 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset):
         if optionalMetaData == "histogrameq":
             file.write("Histogram equalization: " + "\n")
         if optionalMetaData == int or float:
-            file.write("Gamma value: " + str(optionalMetaData) + "\n")
+            file.write("Gamma value: " + str(optionalMetaData))
+            if augmentationType == "loss_gamma":
+                file.write(" (Augmentation type: loss_gamma)" + "\n")
+            else:
+                file.write("\n")
         file.write("Average PSNR: " + str(psnrAvg) + "\n")
         file.write("Average SSIM: " + str(ssimAvg) + "\n")
         file.write("Average LPIPS: " + str(lpipsAvg) + "\n")
