@@ -1,4 +1,5 @@
 import sys
+import time
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -49,25 +50,29 @@ def estimateOptimalGammaValue(dataFolder):
     for image in images:
         image = np.array(image[1])
         normalized_image = (image - np.min(image)) / (np.max(image) - np.min(image))
-        avgPixelIntensity += np.mean(normalized_image)
+        avgPixelIntensity += np.median(normalized_image)
         
     avgPixelIntensity = avgPixelIntensity / len(images)
     
     #calculate gamma value
     gamma = np.log(0.5) / np.log(avgPixelIntensity)
     print("Estimated best gamma value: ", gamma)    
+    #calculate time taken
     return gamma
 
 
 
-filePath = "/home/exjobb/oloah408/nerfs-test-pipeline/data/eyefultower/raf_furnishedroom/images-jpeg-1k"
-sceneName = "raf_furnishedroom"
+filePath = "/home/exjobb/oloah408/nerfs-test-pipeline/data/eyefultower/riverview/images-jpeg-1k"
+sceneName = "riverview"
     
 originalHist = calculateHistogram(loadImagesWithFilenames(filePath, "eyefulTower"))
 
-estimatedGamma = estimateOptimalGammaValue(filePath)
+startTime = time.time()
 
+estimatedGamma = estimateOptimalGammaValue(filePath)
 gammaCorrectedImages = adjustGamma(estimatedGamma, loadImagesWithFilenames(filePath,"eyefulTower"))
+print("Time taken: ", time.time() - startTime)
+
 
 gammaCorrectedHist = calculateHistogram(gammaCorrectedImages)
 

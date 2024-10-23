@@ -49,15 +49,18 @@ def histeq(x, bins=256, batch_size=100):
         end_idx = min(start_idx + batch_size, N)
         for i in range(start_idx, end_idx):
             # Normalize the image
-            image = x[i]
-            normalized_image = (image - np.min(image)) / (np.max(image) - np.min(image))
+            
+            image = np.array(x[i])/255
+            
+            #normalized_image = (image - np.min(image)) / (np.max(image) - np.min(image))
+            
             
             # Calculate histogram for the normalized image and accumulate
-            h, _ = np.histogram(normalized_image, bins=b)
+            h, _ = np.histogram(image, bins=b)
             H += h
             
             # Free memory
-            del normalized_image
+            del image
             del h
             gc.collect()
 

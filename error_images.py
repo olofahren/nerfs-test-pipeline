@@ -24,8 +24,8 @@ def calculateErrorImages(groundTruthImages, renderedImages):
 
 
 
-renderedImagesFilepath = "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-18_211655/test/rgb"
-groundTruthImagesFilepath = "/home/exjobb/oloah408/nerfs-test-pipeline/data/eyefultower/office1b/images-jpeg-1k/22"
+renderedImagesFilepath = "/home/exjobb/oloah408/nerfs-test-pipeline/renders/2024-09-20_051051/test/rgb/"
+groundTruthImagesFilepath = "/home/exjobb/oloah408/nerfs-test-pipeline/data/eyefultower/office_view1/images-jpeg-1k/22"
 
 
 
