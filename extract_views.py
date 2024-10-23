@@ -22,8 +22,9 @@ def renderTestViews(nerfModel, dataset, dataFolder):
         os.system("ns-render dataset --load-config " + configPath + " --output-path renders/"+ runName +" --rendered-output-names rgb")
     
     if dataset == "eyefulTower":
-        runName = str(getLatestFolder("outputs/images-jpeg-1k/"+nerfModel+"/"))
-        configPath = "outputs/images-jpeg-1k/"+nerfModel+"/"+runName+"/config.yml"
+        #CHANGE THIS WHEN CHANGING THE DATASET OR DATA TYPE FROM/TO EXR/JPG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        runName = str(getLatestFolder("outputs/images-1k/"+nerfModel+"/"))
+        configPath = "outputs/images-1k/"+nerfModel+"/"+runName+"/config.yml"
         
         #nerfstudio.data.dataparsers.base_dataparser.DataParser("nerfs-test-pipeline/outputs/images-jpeg-1k/instant-ngp/2024-08-10_161103/config.yml")  
         
@@ -47,7 +48,9 @@ def getLatestFolderConsideringDataset(dataset, nerfModel):
     if dataset == "blender":
         path = "outputs/unnamed/"+nerfModel+"/"
     elif dataset == "eyefulTower":
-        path = "outputs/images-jpeg-1k/"+nerfModel+"/"
+        #CHANGE THIS WHEN CHANGING THE DATASET OR DATA TYPE FROM/TO EXR/JPG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        path = "outputs/images-1k/"+nerfModel+"/"
+        print("Path to latest folder: " + path)
     else:
         print("Invalid dataset in extract_views.py")
         return

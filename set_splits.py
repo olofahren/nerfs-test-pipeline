@@ -100,6 +100,10 @@ def makeTestSetFolder(testSplitFileNames, rootDataFolder):
                 
     for filename in testSplitFileNames:
         folderNumber = filename.split('_')[0]
+        #if the file ending is exr, change it to jpg
+        if filename.endswith('.exr'):
+            filename = filename[:-4] + ".jpg"
+            
         os.system("cp " + rootDataFolder + "/"+folderNumber +"/"+filename +" "+rootDataFolder +"/test_images")
             
             

@@ -59,6 +59,9 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset, aug
     print("Computing quality metrics for images in folders: " + folder1 + " and " + folder2)
     print("This may take a while...")
     
+    print("OPTIONAL METADATA: ", optionalMetaData)
+
+    
     ssimAll = []
     psnrAll = []
     lpipsAll = []
@@ -160,12 +163,17 @@ def getQualityMetricsFromFolder(folder1, folder2, optionalMetaData, dataset, aug
         filedata = file.read()
     with open(folder2+"quality_metrics.txt", "w") as file:
         file.write("Dataset: " + folder1 + "\n")
-        if optionalMetaData == "histogrameq":
+        if augmentationType == "histogrameq":
             file.write("Histogram equalization: " + "\n")
-        if optionalMetaData == int or float:
-            file.write("Gamma value: " + str(optionalMetaData))
+        if augmentationType == "histogram_matching":
+            file.write("Histogram matching: " + "\n")
+        if isinstance(optionalMetaData, (int, float)):
+            if augmentationType == "gamma":
+                file.write("Gamma value: " + str(optionalMetaData))
             if augmentationType == "loss_gamma":
                 file.write(" (Augmentation type: loss_gamma)" + "\n")
+            if augmentationType == "histogram_matching":
+                file.write(" (Standard deviation: " + str(optionalMetaData) + ") \n")
             else:
                 file.write("\n")
         file.write("Average PSNR: " + str(psnrAvg) + "\n")

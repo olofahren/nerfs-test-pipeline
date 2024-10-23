@@ -1,3 +1,4 @@
+import ctypes
 import gc
 import glob
 import math
@@ -14,6 +15,8 @@ import getpass
 #from entropy_measurement import calculateAvgSceneEntropy
 import gamma_correction
 import histogram_equalization
+from histogram_matching import calculateAverageHistogram, histMatch
+from hdr_tonemapping_to_normal_distirubution import histMatchHDR, calculateAverageHistogramHDR, loadImagesWithFilenamesHDR, saveImagesEyefultowerEXR2JPEG
 
 #------------------------------Settings------------------------------
 
@@ -50,7 +53,7 @@ def loadImages(folder):
                     with Image.open(img_path) as img:
                         images.append(img.copy())
                 except IOError:
-                    print("Error opening image " + filename)
+                    print("[loadImages]Error opening image " + filename)
     except Exception as e:
         print("Error accessing folder " + abs_folder_path + ": " + str(e))
 
@@ -69,7 +72,7 @@ def loadImagesFilenames(folder):
                 try:
                     filenames.append(filename)
                 except IOError:
-                    print("Error opening image " + filename)
+                    print("[loadImagesFilenames]Error opening image " + filename)
     return filenames    
 
 def loadImagesWithFilenames(folder, dataset, includeList=[]):
@@ -116,13 +119,14 @@ def loadImagesWithFilenames(folder, dataset, includeList=[]):
                 for filename in files:
                     if includeList:
                         #print("Include list provided")
-                        if filename.endswith(('.exr', ".png", ".jpg", "jpeg")) and filename in includeList:
+                        if filename.endswith((".png", ".jpg", "jpeg")) and filename in includeList:
                             img_path = os.path.join(root, filename)
                             try:
                                 with Image.open(img_path) as img:
                                     images.append((filename, img.copy()))
                             except IOError:
-                                print("Error opening image " + filename)
+                                print("[loadImagesWithFilenames - eyefultower, includelist]Error opening image " + filename)
+                            
                     else:
                         #print("Include list NOT provided")
                         if filename.endswith(('.exr', ".png", ".jpg", "jpeg")):
@@ -131,7 +135,7 @@ def loadImagesWithFilenames(folder, dataset, includeList=[]):
                                 with Image.open(img_path) as img:
                                     images.append((filename, img.copy()))
                             except IOError:
-                                print("Error opening image " + filename)
+                                print("[loadImagesWithFilenames - eyefultower]Error opening image " + filename)
         except Exception as e:
             print("Error accessing folder " + abs_folder_path + ": " + str(e))
           
@@ -144,7 +148,7 @@ def loadImagesWithFilenames(folder, dataset, includeList=[]):
                         with Image.open(img_path) as img:
                             images.append((filename, img.copy()))
                     except IOError:
-                        print("Error opening image " + abs_folder_path)
+                        print("[loadImagesWithFilenames - other dataset]Error opening image " + abs_folder_path)
         except Exception as e:
             print("Error accessing folder " + abs_folder_path + ": " + str(e))
 
@@ -241,26 +245,28 @@ def restoreOriginalImagesBlender(root, train_folder):
 
     #Restore original images
     print("Restoring original images from " + root + "original_images/train to " + root + train_folder)
-    os.system("sudo cp "+ root + "original_images/train/* " + root + train_folder)
-    subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + train_folder])
+    #os.system("sudo cp "+ root + "original_images/train/* " + root + train_folder)
+    #subprocess.run(["sudo", "chown", "-R", user + ":" + user, root + train_folder])
 
 def restoreOriginalImagesEyefulTower(root, imageFiletype):
     user = getpass.getuser()
     root = os.path.expanduser(root)
     if imageFiletype == "exr":
-        os.system("sudo sed -i 's/.png/.exr/g' "+root+"md5sums.txt")
-        os.system("sudo sed -i 's/.png/.exr/g' "+root+"transforms.json")
+        print("Not changing .jpg to .exr after restoring original images")
+        #os.system("sudo sed -i 's/.jpg/.exr/g' "+root+"md5sums.txt")
+        #os.system("sudo sed -i 's/.jpg/.exr/g' "+root+"transforms.json")
         
     #get number of folders in root
     num_folders = len([name for name in os.listdir(root) if os.path.isdir(os.path.join(root, name))])
     
-    for i in range(num_folders):
-        print("Restoring original images from " + root + "original_images/"+str(i)+ " to " + root + str(i))
-        os.system("sudo rm -r " + root + str(i))
+    print("NOT RESTORING ORIGINAL IMAGES")
+    # for i in range(num_folders):
+    #     print("Restoring original images from " + root + "original_images/"+str(i)+ " to " + root + str(i))
+    #     os.system("sudo rm -r " + root + str(i))
     
-    #copy the entire contents of original_images to the current folder
-    os.system("sudo cp -r " + root + "original_images/*"+ " " + root)
-    subprocess.run(["sudo", "chown", "-R", user + ":" + user, root])
+    # #copy the entire contents of original_images to the current folder
+    # os.system("sudo cp -r " + root + "original_images/*"+ " " + root)
+    # subprocess.run(["sudo", "chown", "-R", user + ":" + user, root])
     
     #remove the original_images folder
     os.system("sudo rm -r " + root + "original_images")
@@ -270,7 +276,7 @@ def restoreOriginalImagesEyefulTower(root, imageFiletype):
 
 # -------------------------AUGMENT IMAGES-------------------------
 
-def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType, cameraResponseFunction=False, clipValue=False, gamma = 1, testImagesFileNames = [], allUsableFiles =[]):
+def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugmentationType, cameraResponseFunction=False, clipValue=False, gamma = 1, testImagesFileNames = [], allUsableFiles =[], std=0.15):
     #if dataset used is BLENDER
     if dataset == "blender":
         copyOriginalImagesBlender(root, train_folder)
@@ -304,6 +310,7 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
     
     #if dataset used is EYEFULTOWER
     elif dataset == "eyefulTower":
+        global bc, t_target, t, avgHistAfterHistMatch
         print("Backing up original images")
         copyOriginalImagesEyefulTower(root)   
         #load images from all folders
@@ -315,7 +322,7 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
         
         # for i in range(1,9):
         #     images_train.extend(loadImages(root + str(i)))
-
+        global histmatchfunc, bincenters
         
         if dataAugmentationType == "camera":        
             #REQUIRES HDR IMAGES TO FUNCTION PROPERLY
@@ -418,10 +425,10 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
             global histeqfunc, bincenters
             
             training_images_wo_filenames = [image[1] for image in training_images]
-            histeqfunc, bincenters = histogram_equalization.histeq(training_images_wo_filenames, 100)
+            histeqfunc, bincenters = histogram_equalization.histeq(training_images_wo_filenames, 256)
             #print(histeqfunc)
             
-            batch_size = 500
+            batch_size = 300
             num_batches = math.ceil(len(training_images)//batch_size) + 1
             print("Number of histogram equalisation application batches: "+str(num_batches))
             
@@ -434,11 +441,12 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
                 augmented_images_train = []
                 for image in batch:
                     # Normalize image between 0 and 1
-                    normalized_image = (image[1] - np.min(image[1])) / (np.max(image[1]) - np.min(image[1]))
+                    #normalized_image = (image[1] - np.min(image[1])) / (np.max(image[1]) - np.min(image[1]))
+                    scaled_image = np.array(image[1])/255
                     #print(f"Normalized image min: {np.min(normalized_image)}, max: {np.max(normalized_image)}")
                     
                     # Apply histogram equalization
-                    augmented_image_data = np.interp(normalized_image, bincenters, histeqfunc)
+                    augmented_image_data = np.interp(scaled_image, bincenters, histeqfunc)
                     #print(f"Augmented image data min: {np.min(augmented_image_data)}, max: {np.max(augmented_image_data)}")
                     
                     # Scale back to [0, 255]
@@ -446,7 +454,8 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
                     augmented_image = Image.fromarray(augmented_image_data)
                     augmented_images_train.append((image[0], augmented_image))
 
-
+                global avgHistEqImages
+#                avgHistEqImages = calculateAverageHistogram(augmented_images_train, bincenters)
                 
                 saveImagesEyefultowerJPEG(augmented_images_train, root)
                 del augmented_images_train
@@ -456,9 +465,38 @@ def augmentImages(root, train_folder, test_folder, val_folder, dataset, dataAugm
             del training_images
             gc.collect()
             
+        elif dataAugmentationType == "histogram_matching":
+            print("Performing histogram matching...")
+            # Load images
+            training_images = loadImagesWithFilenames(root, "eyefulTower", allUsableFiles)
+            
+            augmented_images_train, bc, t_target, t, avgHistAfterHistMatch = histMatch(training_images, std=std, bins=256, batch_size=100)
             
             
+            saveImagesEyefultowerJPEG(augmented_images_train, root)
+            del augmented_images_train    
+            gc.collect()   
             
+        elif dataAugmentationType == "histogram_matching_HDR":
+            print("Performing histogram matching before quantization step...")
+            
+            training_images = loadImagesWithFilenamesHDR(root)
+            #batch_size = 300
+            #for i in range(0, len(training_images), batch_size):
+            #batch = training_images[i:i + batch_size]
+            
+            #This also saves the images to folder
+            augmented_images_train, bc, t_target, t, avgHistAfterHistMatch, h_target = histMatchHDR(training_images, std=std, bins=256, batch_size=50, save_folder=root)
+            
+            #saveImagesEyefultowerEXR2JPEG(augmented_images_train, root)
+            del augmented_images_train
+            del training_images
+            #del batch
+            ctypes.CDLL("libc.so.6").malloc_trim(0) 
+            gc.collect()
+        
+            #change all .exr file extensions back to .png in transforms.json
+            os.system("sudo sed -i 's/.exr/.jpg/g' "+root+"transforms.json")
 
             
         elif dataAugmentationType == "none":
